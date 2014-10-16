@@ -1,5 +1,3 @@
-# DTDD - dave_tucker does dotfiles
-
 ## Dotfiles
 
 Dotfiles are all those `.` files that sit in your `~` and customize your system. Here are mine.
@@ -19,7 +17,7 @@ What I like about my dotfiles:
     + Any `.zsh` file in the dotfiles project is included in zshrc
 - Ubuntu Mono fonts (vanilla and powerline modded)
 - A massive gitconfig
-- Homebrew 
+- Homebrew
     + Installs Homebrew AND `brew install`'s all of my favourite packages
     + Uses `homebrew-cask` to install all my applications
 - Base16-Ocean colors for IntelliJ (and other IDEA IDE's)
