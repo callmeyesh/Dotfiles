@@ -1,6 +1,6 @@
 # Go
-export GOPATH=~/go
-export PATH=$PATH:~/go/bin
+export GOPATH=~/dev/go
+export PATH=$PATH:~/dev/go/bin
 
 # Java
 export JAVA_HOME=$(/usr/libexec/java_home)

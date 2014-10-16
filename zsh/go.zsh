@@ -1,1 +1,1 @@
-mkdir -p ~/go
+mkdir -p ~/dev/go
