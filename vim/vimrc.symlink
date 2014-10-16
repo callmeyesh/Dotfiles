@@ -1,17 +1,6 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
 
-" turn on syntax highlighting
-syntax on
-
-" turn on line numbering
-set number
-
-" Make backspace behave in a sane manner.
-set backspace=indent,eol,start
-
-" Enable file type detection and do language-dependent indenting.
-filetype plugin indent on
+filetype plugin indent on     " Enable file type detection and do language-dependent indenting
+filetype off                  " Required
 
 " Setting up Vundle - the vim plugin bundler
     let iCanHazVundle=1
@@ -28,7 +17,21 @@ filetype plugin indent on
     call vundle#rc()
     Bundle 'gmarik/vundle'
     Bundle 'chriskempson/base16-vim'
-
+    Bundle 'tpope/vim-surround'
+    Bundle 'scrooloose/nerdtree'
+    Bundle 'klen/python-mode'
+    Bundle 'davidhalter/jedi-vim'
+    Bundle 'kien/ctrlp.vim'
+    Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+    Bundle 'rking/ag.vim'
+    Bundle 'ntpeters/vim-better-whitespace'
+    Bundle 'jistr/vim-nerdtree-tabs'
+    Bundle 'nelstrom/vim-visual-star-search'
+    Bundle 'Raimondi/delimitMate'
+    Bundle 'terryma/vim-multiple-cursors'
+    Bundle 'goldfeld/ctrlr.vim'
+    Bundle 'airblade/vim-gitgutter'
+    Bundle "vim-scripts/IndexedSearch"
     if iCanHazVundle == 0
         echo "Installing Bundles, please ignore key map error messages"
         echo ""
@@ -36,6 +39,365 @@ filetype plugin indent on
     endif
 " Setting up Vundle - the vim plugin bundler end
 
-" color scheme
+let mapleader=","
+
+" Turn on syntax highlighting
+syntax on
+
+set nocompatible              " Required
+
+" Make backspace behave in a sane manner.
+set backspace=indent,eol,start
+set number
+set laststatus=2
+set showtabline=2               " Always display the tabline, even if there is only one tab
+set noshowmode                  " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set gcr=a:blinkon0              " Disable cursor blink
+set visualbell                  " No sounds
+set history=1000                " Store lots of :cmdline history
+
+" This makes vim act like all other editors, buffers can
+" exist in the background without being in a window.
+" http://items.sjbach.com/319/configuring-vim-right
+set hidden
+
+" Color scheme
 set background=dark
-colorscheme base16-ocean
+colorscheme base16-paraiso
+
+" Turn Off Swap Files
+set noswapfile
+set nobackup
+set nowb
+
+
+" ================ Indentation ======================
+
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+set list
+
+let g:indent_guides_auto_colors = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+
+" ================ Persistent Undo ==================
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+" Display tabs and trailing spaces visually
+set list listchars=tab:\ \ ,trail:·
+
+" ================ Folds ============================
+
+set foldmethod=indent   "fold based on indent
+set foldlevel=99
+set foldnestmax=3       "deepest fold is 3 levels
+set nofoldenable        "dont fold by default
+
+" ================ Scrolling ========================
+
+set scrolloff=8         "Start scrolling when we're 8 lines away from margins
+set sidescrolloff=15
+set sidescroll=1
+
+" Automatic formatting
+autocmd BufWritePre *.rb :%s/\s\+$//e
+autocmd BufWritePre *.go :%s/\s\+$//e
+autocmd BufWritePre *.haml :%s/\s\+$//e
+autocmd BufWritePre *.html :%s/\s\+$//e
+autocmd BufWritePre *.scss :%s/\s\+$//e
+autocmd BufWritePre *.slim :%s/\s\+$//e
+
+au BufNewFile * set noeol
+au BufRead,BufNewFile *.go set filetype=go
+
+" Reload vimrc after save
+autocmd! bufwritepost .vimrc source %
+
+" No show command
+autocmd VimEnter * set nosc
+
+" Quick ESC
+imap jj <ESC>
+
+" move up/down quickly by using Cmd-j, Cmd-k
+" which will move us around by functions
+nnoremap <silent> <D-j> }
+nnoremap <silent> <D-k> {
+
+" Jump to the next row on long lines
+map <Down> gj
+map <Up>   gk
+nnoremap j gj
+nnoremap k gk
+
+" BUFFER
+" Open new buffers
+nmap <leader>s<left>   :leftabove  vnew<cr>
+nmap <leader>s<right>  :rightbelow vnew<cr>
+nmap <leader>s<up>     :leftabove  new<cr>
+nmap <leader>s<down>   :rightbelow new<cr>
+
+" Tab between buffers
+noremap <tab> <c-w><c-w>
+
+" Switch between last two buffers
+nnoremap <leader><leader> <C-^>
+
+" Resize buffers
+if bufwinnr(1)
+  nmap Ä <C-W><<C-W><
+  nmap Ö <C-W>><C-W>>
+  nmap ö <C-W>-<C-W>-
+  nmap ä <C-W>+<C-W>+
+endif
+
+" ==============================
+" Window/Tab/Split Manipulation
+" ==============================
+" Move between split windows by using the four directions H, L, I, N
+nnoremap <silent> <C-h> <C-w>h
+nnoremap <silent> <C-l> <C-w>l
+nnoremap <silent> <C-k> <C-w>k
+nnoremap <silent> <C-j> <C-w>j
+
+" Create window splits easier. The default
+" way is Ctrl-w,v and Ctrl-w,s. I remap
+" this to vv and ss
+nnoremap <silent> vv <C-w>v
+nnoremap <silent> ss <C-w>s
+
+if has("gui_macvim")
+  " Press Ctrl-Tab to switch between open tabs (like browser tabs) to
+  " the right side. Ctrl-Shift-Tab goes the other way.
+  noremap <C-Tab> :tabnext<CR>
+  noremap <C-S-Tab> :tabprev<CR>
+
+  " Switch to specific tab numbers with Command-number
+  noremap <D-1> :tabn 1<CR>
+  noremap <D-2> :tabn 2<CR>
+  noremap <D-3> :tabn 3<CR>
+  noremap <D-4> :tabn 4<CR>
+  noremap <D-5> :tabn 5<CR>
+  noremap <D-6> :tabn 6<CR>
+  noremap <D-7> :tabn 7<CR>
+  noremap <D-8> :tabn 8<CR>
+  noremap <D-9> :tabn 9<CR>
+  " Command-0 goes to the last tab
+  noremap <D-0> :tablast<CR>
+endif
+
+" Fonts for poweline
+set guifont=Inconsolata\ for\ Powerline:h15
+let g:Powerline_symbols = 'fancy'
+set encoding=utf-8
+set t_Co=256
+set fillchars+=stl:\ ,stlnc:\
+set termencoding=utf-8
+
+if has("gui_running")
+  " Show tab number (useful for Cmd-1, Cmd-2.. mapping)
+  " For some reason this doesn't work as a regular set command,
+  " (the numbers don't show up) so I made it a VimEnter event
+   autocmd VimEnter * set guitablabel=%N:\ %t\ %M
+   let s:uname = system("uname")
+   if s:uname == "Darwin\n"
+      set guifont=Inconsolata\ for\ Powerline:h15
+   endif
+   set guioptions=gm
+   set t_Co=256
+endif
+
+" NERDTree
+" Cmd-Shift-N for nerd tree
+nmap <D-N> :NERDTreeToggle<CR>
+let NERDTreeHighlightCursorline=1
+let NERDTreeIgnore = ['tmp', '.yardoc', 'pkg']
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_focus_on_files = 1
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let g:NERDTreeWinSize = 30
+
+" CtrlP
+nnoremap <silent> t :CtrlP<cr>
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_by_filename = 1
+let g:ctrlp_max_files = 600
+let g:ctrlp_max_depth = 5
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " Linux/MacOSX ignore
+let g:multi_cursor_prev_key='<C-p>'
+
+if exists("g:ctrlp_user_command")
+  unlet g:ctrlp_user_command
+endif
+if executable('ag')
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command =
+    \ 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+else
+  " Fall back to using git ls-files if Ag is not available
+  let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+endif
+
+" ================ Search Settings  =================
+
+set incsearch       " Find the next match as we type the search
+set hlsearch        " Hilight searches by default
+set viminfo='100,f1 " Save up to 100 marks, enable capital marks
+set ignorecase      " Ignore case when searching...
+set smartcase       " ...unless we type a capital
+
+" Disable the scrollbars (NERDTree)
+set guioptions-=r
+set guioptions-=L
+
+" Disable the macvim toolbar
+set guioptions-=T
+
+" Show matching brackets when text indicator is over them
+set showmatch
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+""""""""""""""""""""""""""""""
+" => Visual mode related
+""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
+
+" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
+map <space> /
+map <c-space> ?
+
+" Disable highlight when <leader><cr> is pressed
+map <silent> <leader><cr> :noh<cr>
+
+" Delete trailing white space on save, useful for Python and CoffeeScript ;)
+func! DeleteTrailingWS()
+  exe "normal mz"
+  %s/\s\+$//ge
+  exe "normal `z"
+endfunc
+autocmd BufWrite *.py :call DeleteTrailingWS()
+autocmd BufWrite *.xml :call DeleteTrailingWS()
+autocmd BufWrite *.sh :call DeleteTrailingWS()
+autocmd BufWrite *.json :call DeleteTrailingWS()
+autocmd BufWrite *.coffee :call DeleteTrailingWS()
+
+" Automatically jump to a file at the correct line number
+" i.e. if your cursor is over /some/path.rb:50 then using 'gf' on it will take
+" you to that line
+
+" use ,gf to go to file in a vertical split
+nnoremap <silent> ,gf   :vertical botright wincmd F<CR>
+nnoremap <silent> <C-F> :vertical botright wincmd F<CR>
+
+" Python-mode
+" Activate rope
+" Keys:
+" K             Show python docs
+" <Ctrl-Space>  Rope autocomplete
+" <Ctrl-c>g     Rope goto definition
+" <Ctrl-c>d     Rope show documentation
+" <Ctrl-c>f     Rope find occurrences
+" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
+" [[            Jump on previous class or function (normal, visual, operator modes)
+" ]]            Jump on next class or function (normal, visual, operator modes)
+" [M            Jump on previous class or method (normal, visual, operator modes)
+" ]M            Jump on next class or method (normal, visual, operator modes)
+
+let g:pymode_rope = 0
+
+" Documentation
+let g:pymode_doc = 1
+let g:pymode_doc_key = 'K'
+
+"Linting
+let g:pymode_lint = 1
+let g:pymode_lint_checker = "pyflakes,pep8"
+" Auto check on save
+let g:pymode_lint_write = 0
+
+" Support virtualenv
+let g:pymode_virtualenv = 1
+
+" Enable breakpoints plugin
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_key = '<leader>b'
+
+" syntax highlighting
+let g:pymode_syntax = 1
+let g:pymode_syntax_all = 1
+let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+let g:pymode_syntax_space_errors = g:pymode_syntax_all
+
+" Don't autofold code
+let g:pymode_folding = 0
+
+let g:pymode_warnings = 1
+let g:pymode_lint = 0
+
+nmap ;w :w<CR>
+nmap ;q :q<CR>
+:imap jj <Esc>
+
+" Open the Ag command and place the cursor into the quotes
+nmap ,ag :Ag ""<Left>
+nmap ,af :AgFile ""<Left>
+
+"Clear current search highlight by double tapping //
+nmap <silent> // :nohlsearch<CR>
+
+nmap <S-Up> v<Up>
+nmap <S-Down> v<Down>
+nmap <S-Left> v<Left>
+nmap <S-Right> v<Right>
+vmap <S-Up> <Up>
+vmap <S-Down> <Down>
+vmap <S-Left> <Left>
+vmap <S-Right> <Right>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! VisualSelection(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+  endfunction
