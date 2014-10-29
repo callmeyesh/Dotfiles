@@ -262,6 +262,7 @@ if has("gui_running")
    endif
    set guioptions=gm
    set t_Co=256
+   set lines=999 columns=999
 endif
 
 " Visual mode related
@@ -331,12 +332,13 @@ let g:Powerline_symbols = 'fancy'
 nmap <D-N> :NERDTreeToggle<CR>
 let NERDTreeHighlightCursorline=1
 let NERDTreeIgnore = ['tmp', '.yardoc', 'pkg','\.pyc$', '\.rbc$', '\~$']
-let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_gui_startup = 1
 let g:nerdtree_tabs_focus_on_files = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let g:NERDTreeWinSize = 30
 let NERDTreeHijackNetrw = 0
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 " CtrlP
 nnoremap <silent> t :CtrlP<cr>
