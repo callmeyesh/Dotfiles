@@ -1,46 +1,125 @@
-filetype plugin indent on     " Enable file type detection and do language-dependent indenting
 filetype off                  " Required
+filetype plugin indent on     " Enable file type detection and do language-dependent indenting
 
-" Setting up Vundle - the vim plugin bundler
-    let iCanHazVundle=1
-    let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
+" ------------------------- PLUGIN SETUP ------------------------------ "
 
-    if !filereadable(vundle_readme)
-        echo "Installing Vundle.."
-        echo ""
-        silent !mkdir -p ~/.vim/bundle
-        silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-        let iCanHazVundle=0
-    endif
-    set rtp+=~/.vim/bundle/vundle/
-    call vundle#rc()
-    Bundle 'gmarik/vundle'
-    Bundle 'chriskempson/base16-vim'
-    Bundle 'tpope/vim-surround'
-    Bundle 'scrooloose/nerdtree'
-    Bundle 'klen/python-mode'
-    Bundle 'davidhalter/jedi-vim'
-    Bundle 'kien/ctrlp.vim'
-    Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-    Bundle 'rking/ag.vim'
-    Bundle 'ntpeters/vim-better-whitespace'
-    Bundle 'jistr/vim-nerdtree-tabs'
-    Bundle 'nelstrom/vim-visual-star-search'
-    Bundle 'Raimondi/delimitMate'
-    Bundle 'terryma/vim-multiple-cursors'
-    Bundle 'goldfeld/ctrlr.vim'
-    Bundle 'airblade/vim-gitgutter'
-    Bundle 'vim-scripts/IndexedSearch'
-    Bundle 'hynek/vim-python-pep8-indent'
-    Bundle 'whatyouhide/vim-gotham'
-    Bundle 'morhetz/gruvbox'
-    if iCanHazVundle == 0
-        echo "Installing Bundles, please ignore key map error messages"
-        echo ""
-        :BundleInstall
-    endif
+let iCanHazVundle=1
+let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
+
+if !filereadable(vundle_readme)
+    echo "Installing Vundle.."
+    echo ""
+    silent !mkdir -p ~/.vim/bundle
+    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+    let iCanHazVundle=0
+endif
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+Bundle 'gmarik/vundle'
+
+" Git
+Bundle 'airblade/vim-gitgutter'
+
+" Code
+Bundle 'Yggdroot/indentLine'
+Bundle 'Chiel92/vim-autoformat'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'tpope/vim-surround'
+Bundle 'Raimondi/delimitMate'
+
+" Search Related
+Bundle 'nelstrom/vim-visual-star-search'
+Bundle 'vim-scripts/IndexedSearch'
+Bundle 'ggreer/the_silver_searcher'
+Bundle 'kien/ctrlp.vim'
+Bundle 'rking/ag.vim'
+Bundle 'goldfeld/ctrlr.vim'
+Bundle 'jeetsukumaran/vim-buffergator'
+
+Bundle 'Shougo/unite.vim'
+Bundle 'Shougo/unite-session'
+Bundle 'Shougo/neomru.vim'
+Bundle 'thinca/vim-unite-history'
+
+" UI/UX
+Bundle 'scrooloose/nerdtree'
+Bundle 'jistr/vim-nerdtree-tabs'
+Bundle 'chriskempson/base16-vim'
+Bundle 'morhetz/gruvbox'
+Bundle 'bling/vim-airline'
+Bundle 'mkitt/tabline.vim'
+Bundle 'ntpeters/vim-better-whitespace'
+Bundle 'junegunn/seoul256.vim'
+"Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+
+" Misc
+Bundle 'terryma/vim-smooth-scroll'
+Bundle 'ton/vim-bufsurf'
+Bundle 'kana/vim-submode'
+
+if iCanHazVundle == 0
+    echo "Installing Bundles, please ignore key map error messages"
+    echo ""
+    :BundleInstall
+endif
+
+" -------------------------------------------------------------------------- "
 
 let mapleader=","
+set background=dark
+colorscheme gruvbox
+set t_Co=256
+
+" Basics
+syntax enable
+syntax on
+set modeline
+
+set nocompatible                    " Gets rid of all the crap that Vim does to be vi compatible
+set modelines=0                     " Prevents some security exploits having to do with modelines in files
+set number                          " Always show line numbers
+set hidden                          " Allow un-saved buffers in background
+set showmatch                       " Set show matching parenthesis
+set ignorecase                      " Ignore case when searching
+set smartcase                       " Ignore case if search pattern is all lowercase,
+set undolevels=1000                 " Use many muchos levels of undo
+
+" Search
+set hlsearch                        " Highlight search terms
+set incsearch                       " Show search matches as you type
+set history=1000                    " Remember more commands and search history
+
+" More cool hacks
+set title                           " Change the terminal's title
+
+set visualbell                      " Don't beep
+set noerrorbells                    " Don't beep
+set mat=2                           " How many tenths of a second to blink when matching brackets
+set gcr=a:blinkon0                  " Disable cursor blink
+set cursorline
+set showtabline=2                   " Always display the tabline, even if there is only one tab
+
+set laststatus=2
+set noshowmode                      " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set viminfo='100,f1                 " Save up to 100 marks, enable capital marks
+
+set clipboard=unnamed               " Share system clipboard.
+set backspace=indent,eol,start      " Make backspace behave normally.
+set directory=/tmp//                " Swap files
+set backupskip=/tmp/*,/private/tmp/* " Don’t create backups when editing files in certain directories
+set ffs=unix,dos,mac                " Default file types
+"set list listchars=tab:»\ ,trail:·  " Special characters for hilighting non-priting spaces/tabs/etc.
+set guioptions-=T                   " Disable the macvim toolbar
+set mat=2                           " How many tenths of a second to blink when matching brackets
+
+set list
+set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
+set showbreak=↪
+
+" Turn Off Swap Files
+set noswapfile
+set nobackup
+set nowb
 
 " Wildmenu
 set wildmenu
@@ -55,137 +134,45 @@ set wildignore+=*.luac                           " Lua byte code
 set wildignore+=*.pyc                            " Python byte code
 set wildignore+=**.class                         " Cursed Java class files
 
-" Ignore in buffer explorer
-let g:netrw_liststyle= 1 " Tree-mode
-let g:netrw_list_hide= '.*\.swp$,.*/$'
-
 " Save when losing focus
 set autowriteall                                 " Auto-save files when switching buffers or leaving vim.
 au FocusLost * silent! :wa
 au TabLeave * silent! :wa
 
-" Basics
-syntax enable
-syntax on
-set nocompatible                    " Required
-set number                          " Always show line numbers
-set hidden                          " Allow un-saved buffers in background
-set clipboard=unnamed               " Share system clipboard.
-set backspace=indent,eol,start      " Make backspace behave normally.
-set directory=/tmp//                " Swap files
-set backupskip=/tmp/*,/private/tmp/*
-set ffs=unix,dos,mac                " Default file types
-set nowrap                          " Don't wrap lines
-set showmatch                       " Set show matching parenthesis
-set ignorecase                      " Ignore case when searching
-set smartcase                       " Ignore case if search pattern is all lowercase,
-                                    " case-sensitive otherwise
-set hlsearch                        " Highlight search terms
-set incsearch                       " Show search matches as you type
-set history=1000                    " Remember more commands and search history
-set undolevels=1000                 " Use many muchos levels of undo
-set title                           " Change the terminal's title
-set visualbell                      " Don't beep
-set noerrorbells                    " Don't beep
-set gcr=a:blinkon0                  " Disable cursor blink
-set laststatus=2
-set noshowmode                      " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-set ai                              " Auto indent
-set si                              " Smart indent
-set wrap                            " Wrap lines
-set mat=2                           " How many tenths of a second to blink when matching brackets
-set viminfo='100,f1                 " Save up to 100 marks, enable capital marks
-set cursorline
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$' " Highlight VCS conflict markers
 
-" Default Tabs & spaces
-set tabstop=4                       " A tab is four spaces
-set shiftwidth=4                    " Number of spaces to use for autoindenting
-set softtabstop=4
-set expandtab
-set shiftround                      " Use multiple of shiftwidth when indenting with '<' and '>'
-set smarttab                        " Insert tabs on the start of a line according to
-                                    " shiftwidth, not tabstop
-set autoindent                      " Always set autoindenting on
-set copyindent                      " Copy the previous indentation on autoindenting
-set textwidth=79                    " Lines longer than 79 columns will be broken
-set autoindent                      " Align the new line indent with the previous line
-set smartindent
-set list listchars=tab:»\ ,trail:·  " Special characters for hilighting non-priting spaces/tabs/etc.
-set modeline
-set showtabline=2                   " Always display the tabline, even if there is only one tab
+let g:netrw_liststyle= 1 " Tree-mode
+let g:netrw_list_hide= '.*\.swp$,.*/$'
 
-let g:indent_guides_auto_colors = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
+" listchar=trail is not as flexible, use the below to highlight trailing
+" whitespace. Don't do it for unite windows or readonly files
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+augroup MyAutoCmd
+  autocmd BufWinEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
+  autocmd InsertEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
+  autocmd InsertLeave * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
+  autocmd BufWinLeave * if &modifiable && &ft!='unite' | call clearmatches() | endif
+augroup END
 
-" Color scheme
-set background=dark
-colorscheme gruvbox
+au BufNewFile * set noeol                        " For new files, make sure there's no EOL at the end of the file
+autocmd! bufwritepost .vimrc source %            " Reload vimrc after save
+autocmd VimEnter * set nosc                      " No show command
 
-" Turn Off Swap Files
-set noswapfile
-set nobackup
-set nowb
+imap jj <ESC>
+nmap ;w :w<CR>
+nmap ;q :q<CR>
 
-" Code Folds
-set foldmethod=indent   "fold based on indent
-set foldlevel=99
-set foldnestmax=3       "deepest fold is 3 levels
-set nofoldenable        "dont fold by default
+" -------------------------------------------------------------------------- "
+"                                MOVEMENT                                    "
+" -------------------------------------------------------------------------- "
 
-" Scrolling
+" Scrolling Related
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
 set sidescroll=1
-
-" Disable the scrollbars (NERDTree)
-set guioptions-=r
-set guioptions-=L
-
-" Disable the macvim toolbar
-set guioptions-=T
-
-" How many tenths of a second to blink when matching brackets
-set mat=2
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
-" Persistent Undo
-" Keep undo history across sessions, by storing in file.
-" Only works all the time.
-if has('persistent_undo')
-  silent !mkdir ~/.vim/backups > /dev/null 2>&1
-  set undodir=~/.vim/backups
-  set undofile
-endif
-
-" Automatic formatting
-autocmd BufWritePre *.rb :%s/\s\+$//e
-autocmd BufWritePre *.go :%s/\s\+$//e
-autocmd BufWritePre *.haml :%s/\s\+$//e
-autocmd BufWritePre *.html :%s/\s\+$//e
-autocmd BufWritePre *.scss :%s/\s\+$//e
-autocmd BufWritePre *.slim :%s/\s\+$//e
-
-" Python configurations
-autocmd FileType python setlocal shiftwidth=4 expandtab tabstop=4 softtabstop=4
-autocmd FileType python setlocal colorcolumn=80
-autocmd FileType python map <buffer> <F4> :call Flake8()<CR>
-autocmd FileType python autocmd BufWritePre * :%s/\s\+$//e
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-
-au BufNewFile * set noeol
-au BufRead,BufNewFile *.go set filetype=go
-
-" Reload vimrc after save
-autocmd! bufwritepost .vimrc source %
-
-" No show command
-autocmd VimEnter * set nosc
-
-" Quick ESC
-imap jj <ESC>
+set guioptions-=r       " Disable the scrollbars (NERDTree)
+set guioptions-=L       " Disable the scrollbars (NERDTree)
 
 " move up/down quickly by using Cmd-j, Cmd-k
 " which will move us around by functions
@@ -198,7 +185,102 @@ map <Up>   gk
 nnoremap j gj
 nnoremap k gk
 
-" BUFFER
+" Automatically jump to a file at the correct line number.
+" If your cursor is over /some/path.rb:50 then using 'gf' on it will take
+" you to that line. Use ,gf to go to file in a vertical split.
+nnoremap <silent> ,gf   :vertical botright wincmd F<CR>
+nnoremap <silent> <C-F> :vertical botright wincmd F<CR>
+
+" Keep undo history across sessions, by storing in file.
+if has('persistent_undo')
+    silent !mkdir ~/.vim/backups > /dev/null 2>&1
+    set undodir=~/.vim/backups
+    set undofile
+endif
+
+" Mapping <Shift>-Arrows to selecting characters/lines
+nmap <S-Up> v<Up>
+nmap <S-Down> v<Down>
+nmap <S-Left> v<Left>
+nmap <S-Right> v<Right>
+vmap <S-Up> <Up>
+vmap <S-Down> <Down>
+vmap <S-Left> <Left>
+vmap <S-Right> <Right>
+
+" -------------------------------------------------------------------------- "
+"                         TABS/SPACES/SPLITS                                 "
+" -------------------------------------------------------------------------- "
+
+" Text Formatting
+set tabstop=4                       " A tab is four spaces
+set shiftwidth=4                    " Number of spaces to use for autoindenting
+set softtabstop=4
+set expandtab
+set shiftround                      " Use multiple of shiftwidth when indenting with '<' and '>'
+set smarttab                        " Insert tabs on the start of a line according to
+set nowrap                            " Wrap lines
+set autoindent                      " Always set autoindenting on
+set copyindent                      " Copy the previous indentation on autoindenting
+set textwidth=0                     " Lines longer than 79 columns will be broken.
+
+" Move between split windows by using the four directions H, L, I, N
+nnoremap <silent> <C-h> <C-w>h
+nnoremap <silent> <C-l> <C-w>l
+nnoremap <silent> <C-k> <C-w>k
+nnoremap <silent> <C-j> <C-w>j
+
+" Create window splits easier. The default way is Ctrl-w,v and Ctrl-w,s.
+" I remap this to vv and ss.
+nnoremap <silent> vv <C-w>v
+nnoremap <silent> ss <C-w>s
+
+" Press Ctrl-Tab to switch between open tabs (like browser tabs) to
+" the right side. Ctrl-Shift-Tab goes the other way.
+if has("gui_macvim")
+   noremap <C-Tab> :tabnext<CR>
+    noremap <C-S-Tab> :tabprev<CR>
+    noremap <D-1> :tabn 1<CR>
+    noremap <D-2> :tabn 2<CR>
+    noremap <D-3> :tabn 3<CR>
+    noremap <D-4> :tabn 4<CR>
+    noremap <D-5> :tabn 5<CR>
+    noremap <D-6> :tabn 6<CR>
+    noremap <D-7> :tabn 7<CR>
+    noremap <D-8> :tabn 8<CR>
+    noremap <D-9> :tabn 9<CR>
+    noremap <D-0> :tablast<CR>
+endif
+
+" Show tab number (useful for Cmd-1, Cmd-2.. mapping) For some reason
+" this doesn't work as a regular set command, (the numbers don't show
+" up) so I made it a VimEnter event.
+if has("gui_running")
+"   autocmd VimEnter * set guitablabel=%N:\ %t\ %M
+    let s:uname = system("uname")
+    if s:uname == "Darwin\n"
+        set guifont=Source\ Code\ Pro\ for\ Powerline:h13
+    endif
+    set guioptions=gm
+    set t_Co=256
+    set lines=999 columns=999
+endif
+
+" -------------------------------------------------------------------------- "
+" Space Key Mappings                                                         "
+" -------------------------------------------------------------------------- "
+
+" Space is also the leader key for Unite actions
+" Space-[jk] scrolls the page
+call submode#enter_with('scroll', 'n', '', '<space>j', ':call smooth_scroll#down(&scroll/2, 5, 1)<CR>')
+call submode#enter_with('scroll', 'n', '', '<space>k', ':call smooth_scroll#up(&scroll/2, 5, 1)<CR>')
+call submode#map('scroll', 'n', '', 'j', ':call smooth_scroll#down(&scroll/2, 5, 1)<CR>')
+call submode#map('scroll', 'n', '', 'k', ':call smooth_scroll#up(&scroll/2, 5, 1)<CR>')
+
+" -------------------------------------------------------------------------- "
+"                            BUFFER                                          "
+" -------------------------------------------------------------------------- "
+
 " Open new buffers
 nmap <leader>s<left>   :leftabove  vnew<cr>
 nmap <leader>s<right>  :rightbelow vnew<cr>
@@ -213,64 +295,15 @@ nnoremap <leader><leader> <C-^>
 
 " Resize buffers
 if bufwinnr(1)
-  nmap Ä <C-W><<C-W><
-  nmap Ö <C-W>><C-W>>
-  nmap ö <C-W>-<C-W>-
-  nmap ä <C-W>+<C-W>+
+    nmap Ä <C-W><<C-W><
+    nmap Ö <C-W>><C-W>>
+    nmap ö <C-W>-<C-W>-
+    nmap ä <C-W>+<C-W>+
 endif
 
-" Window/Tab/Split Manipulation
-" Move between split windows by using the four directions H, L, I, N
-nnoremap <silent> <C-h> <C-w>h
-nnoremap <silent> <C-l> <C-w>l
-nnoremap <silent> <C-k> <C-w>k
-nnoremap <silent> <C-j> <C-w>j
-
-" Create window splits easier. The default
-" way is Ctrl-w,v and Ctrl-w,s. I remap
-" this to vv and ss
-nnoremap <silent> vv <C-w>v
-nnoremap <silent> ss <C-w>s
-
-if has("gui_macvim")
-  " Press Ctrl-Tab to switch between open tabs (like browser tabs) to
-  " the right side. Ctrl-Shift-Tab goes the other way.
-  noremap <C-Tab> :tabnext<CR>
-  noremap <C-S-Tab> :tabprev<CR>
-  " Switch to specific tab numbers with Command-number
-  noremap <D-1> :tabn 1<CR>
-  noremap <D-2> :tabn 2<CR>
-  noremap <D-3> :tabn 3<CR>
-  noremap <D-4> :tabn 4<CR>
-  noremap <D-5> :tabn 5<CR>
-  noremap <D-6> :tabn 6<CR>
-  noremap <D-7> :tabn 7<CR>
-  noremap <D-8> :tabn 8<CR>
-  noremap <D-9> :tabn 9<CR>
-  " Command-0 goes to the last tab
-  noremap <D-0> :tablast<CR>
-endif
-
-if has("gui_running")
-  " Show tab number (useful for Cmd-1, Cmd-2.. mapping)
-  " For some reason this doesn't work as a regular set command,
-  " (the numbers don't show up) so I made it a VimEnter event
-   autocmd VimEnter * set guitablabel=%N:\ %t\ %M
-   let s:uname = system("uname")
-   if s:uname == "Darwin\n"
-      set guifont=Inconsolata\ for\ Powerline:h15
-   endif
-   set guioptions=gm
-   set t_Co=256
-   set lines=999 columns=999
-endif
-
-" Visual mode related
-" Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :call VisualSelection('f')<CR>
-vnoremap <silent> # :call VisualSelection('b')<CR>
-
+" -------------------------------------------------------------------------- "
+"                               SEARCH                                       "
+" -------------------------------------------------------------------------- "
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 map <space> /
 map <c-space> ?
@@ -278,12 +311,19 @@ map <c-space> ?
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 
-" Delete trailing white space on save, useful for Python and CoffeeScript ;)
-func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
-endfunc
+"Clear current search highlight by double tapping //
+nmap <silent> // :nohlsearch<CR>
+
+" bind K to grep word under cursor
+" This uses ag over grep.
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" Ctrl-sr: Easier (s)earch and (r)eplace
+nnoremap <c-s><c-r> :%s/<c-r><c-w>//gc<left><left><left>
+
+" -------------------------------------------------------------------------- "
+"                            GENERAL CODE SETTINGS                           "
+" -------------------------------------------------------------------------- "
 
 autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.xml :call DeleteTrailingWS()
@@ -291,44 +331,57 @@ autocmd BufWrite *.sh :call DeleteTrailingWS()
 autocmd BufWrite *.json :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
 
-" Automatically jump to a file at the correct line number
-" i.e. if your cursor is over /some/path.rb:50 then using 'gf' on it will take
-" you to that line
-" use ,gf to go to file in a vertical split
-nnoremap <silent> ,gf   :vertical botright wincmd F<CR>
-nnoremap <silent> <C-F> :vertical botright wincmd F<CR>
 
-nmap ;w :w<CR>
-nmap ;q :q<CR>
-:imap jj <Esc>
+" -------------------------------------------------------------------------- "
+"                            PYTHON SETTINGS                                 "
+" -------------------------------------------------------------------------- "
 
-" Open the Ag command and place the cursor into the quotes
-nmap ,ag :Ag ""<Left>
-nmap ,af :AgFile ""<Left>
+autocmd FileType python setlocal colorcolumn=80
+autocmd FileType python autocmd BufWritePre * :%s/\s\+$//e
+autocmd BufReadPre,BufNewFile SConstruct set filetype=python
+autocmd BufReadPre,BufNewFile SConscript set filetype=python
 
-"Clear current search highlight by double tapping //
-nmap <silent> // :nohlsearch<CR>
-nmap <S-Up> v<Up>
-nmap <S-Down> v<Down>
-nmap <S-Left> v<Left>
-nmap <S-Right> v<Right>
-vmap <S-Up> <Up>
-vmap <S-Down> <Down>
-vmap <S-Left> <Left>
-vmap <S-Right> <Right>
 
-"""""""""""""""""""""""
-" Plugin Configurations
-"""""""""""""""""""""""
-" Fonts for poweline
-set guifont=Inconsolata\ for\ Powerline:h15
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-set termencoding=utf-8
-let g:Powerline_symbols = 'fancy'
+" -------------------------------------------------------------------------- "
+"                            PLUGIN SETTINGS                                 "
+" -------------------------------------------------------------------------- "
 
-" NERDTree (Cmd-Shift-N for nerd tree)
+" SMOOTH SCROLL PLUGIN SETTINGS
+"{
+" Ctrl-u: Scroll half a screen up smoothly
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 5, 1)<CR>
+" Ctrl-d: Scroll half a screen down smoothly
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 5, 1)<CR>
+"}
+
+" INDENTLINE PLUGIN SETTINGS
+"{
+let g:indentLine_color_term = 239
+let g:indentLine_char = '┆'
+"}
+
+" POWERLINE PLUGIN SETTINGS
+"{
+"set guifont=Source\ Code\ Pro\ for\ Powerline:h13
+"set encoding=utf-8
+"set t_Co=256
+"set fillchars+=stl:\ ,stlnc:\
+"set termencoding=utf-8
+"let g:Powerline_symbols = 'fancy'
+"}
+
+" AIRLINE PLUGIN SETTINGS
+"{
+let g:airline_powerline_fonts = 1
+let g:bufferline_echo = 0
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#hunks#enabled = 1
+let g:airline#extensions#whitespace#enabled = 1
+"}
+
+" NERDTREE PLUGIN SETTINGS (Cmd-Shift-N for nerd tree)
+"{
 nmap <D-N> :NERDTreeToggle<CR>
 let NERDTreeHighlightCursorline=1
 let NERDTreeIgnore = ['tmp', '.yardoc', 'pkg','\.pyc$', '\.rbc$', '\~$']
@@ -339,94 +392,85 @@ let NERDTreeDirArrows = 1
 let g:NERDTreeWinSize = 30
 let NERDTreeHijackNetrw = 0
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+"}
 
-" CtrlP
-nnoremap <silent> t :CtrlP<cr>
+" AG PLUGIN SETTINGS
+"{
+" Open the Ag command and place the cursor into the quotes
+nmap ,ag :Ag ""<Left>
+nmap ,af :AgFile ""<Left>
+"}
+
+" BUFFERGATOR PLUGIN SETTINGS
+"{
+" Use the right side of the screen
+let g:buffergator_viewport_split_policy = 'R'
+" I want my own keymappings...
+let g:buffergator_suppress_keymaps = 1
+" Go to the previous buffer open
+nmap <leader>jj :BuffergatorMruCyclePrev<cr>
+" Go to the next buffer open
+nmap <leader>kk :BuffergatorMruCycleNext<cr>
+" View the entire list of buffers open
+nmap <leader>bl :BuffergatorOpen<cr>
+" To open a new empty buffer
+" This replaces :tabnew which I used to bind to this mapping
+nmap <leader>T :enew<cr>
+" Close the current buffer and move to the previous one
+" This replicates the idea of closing a tab
+nmap <leader>bq :bp <BAR> bd #<CR>
+"}
+
+" CTRLP PLUGIN SETTINGS
+"{
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_by_filename = 1
 let g:ctrlp_max_files = 600
 let g:ctrlp_max_depth = 5
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " Linux/MacOSX ignore
 let g:multi_cursor_prev_key='<C-p>'
 
+nnoremap <silent> t :CtrlP<cr>
+
+" Use a leader instead of the actual named binding
+nmap <leader>p :CtrlP<cr>
+
+" Easy bindings for its various modes
+nmap <leader>bb :CtrlPBuffer<cr>
+nmap <leader>bm :CtrlPMixed<cr>
+nmap <leader>bs :CtrlPMRU<cr>
+
 if exists("g:ctrlp_user_command")
-  unlet g:ctrlp_user_command
+    unlet g:ctrlp_user_command
 endif
 
+" Ignore some folders and files for CtrlP indexing
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.yardoc\|public$|log\|tmp$',
+  \ 'file': '\.so$\|\.dat$|\.DS_Store$'}
+
+" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
 if executable('ag')
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
+    " Use ag over grep
+    set grepprg=ag\ --nogroup\ --nocolor
+    let g:ctrlp_user_command = 'ag %s --files-with-matches -g "" --ignore "\.git$\|\.hg$\|\.svn$"'
+    " ag is fast enough that CtrlP doesn't need to cache
+    let g:ctrlp_use_caching = 0
 else
-  " Fall back to using git ls-files if Ag is not available
-  let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
-  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+    " Fall back to using git ls-files if Ag is not available
+    "let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+    "let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
 endif
+"}
 
-" Python-mode
-" Activate rope
-" Keys:
-" K             Show python docs
-" <Ctrl-Space>  Rope autocomplete
-" <Ctrl-c>g     Rope goto definition
-" <Ctrl-c>d     Rope show documentation
-" <Ctrl-c>f     Rope find occurrences
-" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
-" [[            Jump on previous class or function (normal, visual, operator modes)
-" ]]            Jump on next class or function (normal, visual, operator modes)
-" [M            Jump on previous class or method (normal, visual, operator modes)
-" ]M            Jump on next class or method (normal, visual, operator modes)
+" -------------------------------------------------------------------------- "
+"                            HELPER FUNCTION                                 "
+" -------------------------------------------------------------------------- "
 
-let g:pymode_rope = 0
-" Documentation
-let g:pymode_doc = 1
-let g:pymode_doc_key = 'K'
-"Linting
-let g:pymode_lint = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
-let g:pymode_lint_message = 1 "Show error message if cursor placed at the error line
-" Auto check on save
-let g:pymode_lint_write = 0
-" Support virtualenv
-let g:pymode_virtualenv = 1
-" Enable breakpoints plugin
-let g:pymode_breakpoint = 1
-let g:pymode_breakpoint_key = '<leader>b'
-" syntax highlighting
-let g:pymode_syntax = 1
-let g:pymode_syntax_all = 1
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
-" Trim unused white spaces on save
-let g:pymode_trim_whitespaces = 1
-" Pymode supports PEP8-compatible python indent.
-let g:pymode_indent = 0
-" Don't autofold code
-let g:pymode_folding = 0
-let g:pymode_warnings = 1
-let g:pymode_lint = 0
+" Delete trailing white space on save.
+func! DeleteTrailingWS()
+    exe "normal mz"
+    %s/\s\+$//ge
+    exe "normal `z"
+endfunc
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! VisualSelection(direction) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
-    elseif a:direction == 'gv'
-        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-    elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
-    elseif a:direction == 'f'
-        execute "normal /" . l:pattern . "^M"
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-  endfunction

@@ -12,7 +12,7 @@ ZSH_THEME="arrow"
 DEFAULT_USER="Yeshwanth"
 
 # Base16 Shell
-BASE16_SHELL="$PROJECTS/base16-shell/base16-codeschool.dark.sh"
+BASE16_SHELL="$PROJECTS/base16-shell/base16-paraiso.dark.sh"
 [[ -s $BASE16_SHELL ]] && . $BASE16_SHELL
 
 # Load config files
@@ -20,7 +20,7 @@ typeset -U config_files
 config_files=($PROJECTS/dotfiles/**/*.zsh)
 for file in ${config_files}
 do
-  source $file
+    source $file
 done
 
 # Set to this to use case-sensitive completion
@@ -63,8 +63,12 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
-# export MANPATH="/usr/local/man:$MANPATH"
+export JAVA_HOME=$(/usr/libexec/java_home)
+export M3_HOME=/usr/local/Cellar/maven/3.2.5/libexec
+export M3=$M3_HOME/bin
+export PATH=/usr/local/bin:$PATH:/usr/local/sbin:$JAVA_HOME:$M3
+
+#export MANPATH="/usr/local/man:$MANPATH"
 
 # # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -81,19 +85,20 @@ export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # set tab title to cwd
 precmd () {
-	tab_label=${PWD/${HOME}/\~} # use 'relative' path
-   	echo -ne "\e]2;${tab_label}\a" # set window title to full string
-	echo -ne "\e]1;${tab_label: -24}\a" # set tab title to rightmost 24 characters
+    tab_label=${PWD/${HOME}/\~} # use 'relative' path
+    echo -ne "\e]2;${tab_label}\a" # set window title to full string
+    echo -ne "\e]1;${tab_label: -24}\a" # set tab title to rightmost 24 characters
 }
 
 #fasd
 # only init if installed.
- fasd_cache="$HOME/.fasd-init-bash"
- if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
-   eval "$(fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)" >| "$fasd_cache"
- fi
+fasd_cache="$HOME/.fasd-init-bash"
+if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
+    eval "$(fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)" >| "$fasd_cache"
+fi
 source "$fasd_cache"
 unset fasd_cache
+
 #
 #
 # jump to recently used items
@@ -103,13 +108,16 @@ alias d='fasd -d' # directory
 alias f='fasd -f' # file
 alias z='fasd_cd -d' # cd, same functionality as j in autojump
 alias zz='fasd_cd -d -i' # interactive directory jump
-# aliases
+
+# ALIASES
+
 # Show human friendly numbers and colors
 alias df='df -h'
 alias ll='ls -alGh'
 alias ls='ls -aG'
 alias du='du -h -d 2'
 alias cl='clear'
+
 # Git Aliases
 alias gs='git status'
 
