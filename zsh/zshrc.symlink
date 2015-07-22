@@ -66,7 +66,8 @@ source $ZSH/oh-my-zsh.sh
 export JAVA_HOME=$(/usr/libexec/java_home)
 export M3_HOME=/usr/local/Cellar/maven/3.2.5/libexec
 export M3=$M3_HOME/bin
-export PATH=/usr/local/bin:$PATH:/usr/local/sbin:$JAVA_HOME:$M3
+export GOPATH=/Users/yvenkatesh/go
+export PATH=/usr/local/bin:/usr/local/sbin:$JAVA_HOME:$M3:$PATH:$GOPATH/bin
 
 #export MANPATH="/usr/local/man:$MANPATH"
 
@@ -110,6 +111,7 @@ alias z='fasd_cd -d' # cd, same functionality as j in autojump
 alias zz='fasd_cd -d -i' # interactive directory jump
 
 # ALIASES
+ctags=/usr/local/bin/ctags
 
 # Show human friendly numbers and colors
 alias df='df -h'

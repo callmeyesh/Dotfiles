@@ -26,6 +26,9 @@ Bundle 'Chiel92/vim-autoformat'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tpope/vim-surround'
 Bundle 'Raimondi/delimitMate'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'pangloss/vim-javascript'
 
 " Search Related
 Bundle 'nelstrom/vim-visual-star-search'
@@ -36,21 +39,19 @@ Bundle 'rking/ag.vim'
 Bundle 'goldfeld/ctrlr.vim'
 Bundle 'jeetsukumaran/vim-buffergator'
 
-Bundle 'Shougo/unite.vim'
-Bundle 'Shougo/unite-session'
-Bundle 'Shougo/neomru.vim'
-Bundle 'thinca/vim-unite-history'
-
 " UI/UX
 Bundle 'scrooloose/nerdtree'
 Bundle 'jistr/vim-nerdtree-tabs'
-Bundle 'chriskempson/base16-vim'
-Bundle 'morhetz/gruvbox'
 Bundle 'bling/vim-airline'
 Bundle 'mkitt/tabline.vim'
 Bundle 'ntpeters/vim-better-whitespace'
-Bundle 'junegunn/seoul256.vim'
+Bundle 'trusktr/seti.vim'
 "Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+
+" Vim Color Scheme
+Bundle 'morhetz/gruvbox'
+Bundle 'chriskempson/base16-vim'
+Bundle 'ajh17/Spacegray.vim'
 
 " Misc
 Bundle 'terryma/vim-smooth-scroll'
@@ -66,9 +67,9 @@ endif
 " -------------------------------------------------------------------------- "
 
 let mapleader=","
-set background=dark
-colorscheme gruvbox
 set t_Co=256
+set background=dark
+colorscheme Spacegray
 
 " Basics
 syntax enable
@@ -112,10 +113,6 @@ set ffs=unix,dos,mac                " Default file types
 set guioptions-=T                   " Disable the macvim toolbar
 set mat=2                           " How many tenths of a second to blink when matching brackets
 
-set list
-set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
-set showbreak=↪
-
 " Turn Off Swap Files
 set noswapfile
 set nobackup
@@ -143,17 +140,6 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$' " Highlight VCS conflict marker
 
 let g:netrw_liststyle= 1 " Tree-mode
 let g:netrw_list_hide= '.*\.swp$,.*/$'
-
-" listchar=trail is not as flexible, use the below to highlight trailing
-" whitespace. Don't do it for unite windows or readonly files
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-augroup MyAutoCmd
-  autocmd BufWinEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
-  autocmd InsertEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
-  autocmd InsertLeave * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
-  autocmd BufWinLeave * if &modifiable && &ft!='unite' | call clearmatches() | endif
-augroup END
 
 au BufNewFile * set noeol                        " For new files, make sure there's no EOL at the end of the file
 autocmd! bufwritepost .vimrc source %            " Reload vimrc after save
@@ -325,18 +311,32 @@ nnoremap <c-s><c-r> :%s/<c-r><c-w>//gc<left><left><left>
 "                            GENERAL CODE SETTINGS                           "
 " -------------------------------------------------------------------------- "
 
+" ** WHITE SPACE MANAGEMENTS
+set list
+set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
+set showbreak=↪
+" listchar=trail is not as flexible, use the below to highlight trailing
+" whitespace. Don't do it for unite windows or readonly files
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+augroup MyAutoCmd
+  autocmd BufWinEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
+  autocmd InsertEnter * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
+  autocmd InsertLeave * if &modifiable && &ft!='unite' | match ExtraWhitespace /\s\+$/ | endif
+  autocmd BufWinLeave * if &modifiable && &ft!='unite' | call clearmatches() | endif
+augroup END
+
 autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.xml :call DeleteTrailingWS()
 autocmd BufWrite *.sh :call DeleteTrailingWS()
 autocmd BufWrite *.json :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
 
-
 " -------------------------------------------------------------------------- "
 "                            PYTHON SETTINGS                                 "
 " -------------------------------------------------------------------------- "
 
-autocmd FileType python setlocal colorcolumn=80
+autocmd FileType python setlocal colorcolumn=100
 autocmd FileType python autocmd BufWritePre * :%s/\s\+$//e
 autocmd BufReadPre,BufNewFile SConstruct set filetype=python
 autocmd BufReadPre,BufNewFile SConscript set filetype=python
@@ -374,8 +374,11 @@ let g:indentLine_char = '┆'
 "{
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
+
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+
 let g:airline#extensions#hunks#enabled = 1
 let g:airline#extensions#whitespace#enabled = 1
 "}
@@ -392,6 +395,12 @@ let NERDTreeDirArrows = 1
 let g:NERDTreeWinSize = 30
 let NERDTreeHijackNetrw = 0
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+"}
+
+" TAGBAR PLUGIN SETTINGS
+"{
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_usearrows = 1
 "}
 
 " AG PLUGIN SETTINGS
@@ -419,6 +428,13 @@ nmap <leader>T :enew<cr>
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
 nmap <leader>bq :bp <BAR> bd #<CR>
+"}
+
+" JEDI VIM PLUGIN SETTINGS
+"{
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#completions_command = "<C-Space>"
 "}
 
 " CTRLP PLUGIN SETTINGS
