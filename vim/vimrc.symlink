@@ -52,6 +52,9 @@ Bundle 'trusktr/seti.vim'
 Bundle 'morhetz/gruvbox'
 Bundle 'chriskempson/base16-vim'
 Bundle 'ajh17/Spacegray.vim'
+Bundle 'chriskempson/vim-tomorrow-theme'
+Bundle 'NLKNguyen/papercolor-theme'
+Bundle 'jdkanani/vim-material-theme'
 
 " Misc
 Bundle 'terryma/vim-smooth-scroll'
@@ -69,7 +72,7 @@ endif
 let mapleader=","
 set t_Co=256
 set background=dark
-colorscheme Spacegray
+colorscheme PaperColor
 
 " Basics
 syntax enable

@@ -68,6 +68,7 @@ export M3_HOME=/usr/local/Cellar/maven/3.2.5/libexec
 export M3=$M3_HOME/bin
 export GOPATH=/Users/yvenkatesh/go
 export PATH=/usr/local/bin:/usr/local/sbin:$JAVA_HOME:$M3:$PATH:$GOPATH/bin
+export PYTHONPATH=/Users/yvenkatesh/Documents/Tesla/yapf
 
 #export MANPATH="/usr/local/man:$MANPATH"
 
