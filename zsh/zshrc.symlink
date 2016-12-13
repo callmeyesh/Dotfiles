@@ -8,10 +8,13 @@ export PROJECTS=~/Documents
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="arrow"
+ZSH_THEME="geometry"
 DEFAULT_USER="Yeshwanth"
 
-# Base16 Shell
+PROMPT_GEOMETRY_GIT_TIME=false
+GEOMETRY_COLOR_PROMPT=147
+
+#Base16 Shell
 BASE16_SHELL="$PROJECTS/base16-shell/base16-paraiso.dark.sh"
 [[ -s $BASE16_SHELL ]] && . $BASE16_SHELL
 
@@ -57,7 +60,7 @@ done
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git gitfast brew celery gradle sublime colorize node ruby osx pep8 python rbenv vagrant virtualenv zsh-syntax-highlighting)
+plugins=(git gitfast brew celery gradle sublime colorize node ruby osx pep8 python rbenv vagrant virtualenv zsh-syntax-highlighting jira)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -67,9 +70,12 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 export M3_HOME=/usr/local/Cellar/maven/3.2.5/libexec
 export M3=$M3_HOME/bin
 export GOPATH=/Users/yvenkatesh/go
-export PATH=/usr/local/bin:/usr/local/sbin:$JAVA_HOME:$M3:$PATH:$GOPATH/bin
+export STACKLOCALBINPATH=/Users/yvenkatesh/.local/bin
+export PATH=/usr/local/bin:/usr/local/sbin:$JAVA_HOME:$M3:$PATH:$GOPATH/bin:$STACKLOCALBINPATH
 export PYTHONPATH=/Users/yvenkatesh/Documents/Tesla/yapf
 
+#TODO: Enable git radar
+#export PROMPT="$PROMPT\$(git-radar --zsh)"
 #export MANPATH="/usr/local/man:$MANPATH"
 
 # # Preferred editor for local and remote sessions
@@ -101,6 +107,8 @@ fi
 source "$fasd_cache"
 unset fasd_cache
 
+#JIRA plugin config
+JIRA_URL="https://issues.teslamotors.com"
 #
 #
 # jump to recently used items
@@ -123,10 +131,14 @@ alias cl='clear'
 
 # Git Aliases
 alias gs='git status'
+alias gsu='git submodule update'
 
 #VirtualBox
-alias startvm='VBoxManage startvm "Ubuntu Tesla VM" -type headless'
-alias savevm='VBoxManage controlvm "Ubuntu Tesla VM" savestate'
-alias poweroffvm='VBoxManage controlvm "Ubuntu Tesla VM" poweroff'
-alias pausevm='VBoxManage controlvm "Ubuntu Tesla VM" pause'
-alias resumevm='VBoxManage controlvm "Ubuntu Tesla VM" resume'
+alias startvm='VBoxManage startvm "Ubuntu16.04" -type headless'
+alias savevm='VBoxManage controlvm "Ubuntu16.04" savestate'
+alias poweroffvm='VBoxManage controlvm "Ubuntu16.04" poweroff'
+alias pausevm='VBoxManage controlvm "Ubuntu16.04" pause'
+alias resumevm='VBoxManage controlvm "Ubuntu16.04" resume'
+
+export NVM_DIR="/Users/yvenkatesh/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

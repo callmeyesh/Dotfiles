@@ -19,6 +19,7 @@ Bundle 'gmarik/vundle'
 
 " Git
 Bundle 'airblade/vim-gitgutter'
+Bundle 'vim-scripts/gitignore'
 
 " Code
 Bundle 'Yggdroot/indentLine'
@@ -26,9 +27,17 @@ Bundle 'Chiel92/vim-autoformat'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tpope/vim-surround'
 Bundle 'Raimondi/delimitMate'
-Bundle 'davidhalter/jedi-vim'
 Bundle 'majutsushi/tagbar'
-Bundle 'pangloss/vim-javascript'
+
+" Haskell
+Bundle 'eagletmt/ghcmod-vim'
+Bundle 'eagletmt/neco-ghc'
+Bundle 'Shougo/vimproc.vim'
+Bundle 'benekastah/neomake'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'mpickering/hlint-refactor-vim'
+Bundle 'Twinside/vim-hoogle'
+Bundle 'bitc/lushtags'
 
 " Search Related
 Bundle 'nelstrom/vim-visual-star-search'
@@ -49,12 +58,7 @@ Bundle 'trusktr/seti.vim'
 "Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 " Vim Color Scheme
-Bundle 'morhetz/gruvbox'
-Bundle 'chriskempson/base16-vim'
-Bundle 'ajh17/Spacegray.vim'
-Bundle 'chriskempson/vim-tomorrow-theme'
-Bundle 'NLKNguyen/papercolor-theme'
-Bundle 'jdkanani/vim-material-theme'
+Bundle 'kristijanhusak/vim-hybrid-material'
 
 " Misc
 Bundle 'terryma/vim-smooth-scroll'
@@ -68,17 +72,19 @@ if iCanHazVundle == 0
 endif
 
 " -------------------------------------------------------------------------- "
-
 let mapleader=","
 set t_Co=256
 set background=dark
-colorscheme PaperColor
+colorscheme hybrid_material
+let g:enable_bold_font = 1          " Some of the code to be bolded, like functions and language controls, add this option
 
 " Basics
 syntax enable
 syntax on
 set modeline
 
+set autoread                        " Set to auto read when a file is changed from the outside
+set tm=2000                         " Leader key timeout
 set nocompatible                    " Gets rid of all the crap that Vim does to be vi compatible
 set modelines=0                     " Prevents some security exploits having to do with modelines in files
 set number                          " Always show line numbers
@@ -202,7 +208,7 @@ vmap <S-Right> <Right>
 " -------------------------------------------------------------------------- "
 
 " Text Formatting
-set tabstop=4                       " A tab is four spaces
+set tabstop=8                       " A tab is four spaces
 set shiftwidth=4                    " Number of spaces to use for autoindenting
 set softtabstop=4
 set expandtab
@@ -248,7 +254,7 @@ if has("gui_running")
 "   autocmd VimEnter * set guitablabel=%N:\ %t\ %M
     let s:uname = system("uname")
     if s:uname == "Darwin\n"
-        set guifont=Source\ Code\ Pro\ for\ Powerline:h13
+        set guifont=Source\ Code\ Pro\ for\ Powerline:h15
     endif
     set guioptions=gm
     set t_Co=256
@@ -344,6 +350,69 @@ autocmd FileType python autocmd BufWritePre * :%s/\s\+$//e
 autocmd BufReadPre,BufNewFile SConstruct set filetype=python
 autocmd BufReadPre,BufNewFile SConscript set filetype=python
 
+" -------------------------------------------------------------------------- "
+"                            Haskell SETTINGS                                "
+" -------------------------------------------------------------------------- "
+
+" Stylish haskell
+autocmd FileType haskell let &formatprg="stylish-haskell"
+
+" GHC-MOD
+au FileType haskell let g:ghcmod_use_basedir = getcwd()
+map <silent> tw :GhcModTypeInsert<CR>
+map <silent> ts :GhcModSplitFunCase<CR>
+map <silent> tq :GhcModType<CR>
+map <silent> te :GhcModTypeClear<CR>
+
+" HLINT
+let g:hlintRefactor#disableDefaultKeybindings = 1
+map <silent> <leader>hr :call ApplyOneSuggestion()<CR>
+map <silent> <leader>hR :call ApplyAllSuggestions()<CR>
+nmap <silent> <leader>hl :Neomake hlint<CR>
+
+" Auto complete
+let g:haskellmode_completion_ghc = 0
+augroup haskell
+  autocmd!
+  autocmd FileType haskell map <silent> <leader><cr> :noh<cr>:GhcModTypeClear<cr>
+  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+augroup END
+let g:necoghc_enable_detailed_browse = 1
+let g:ycm_semantic_triggers = {'haskell' : ['.']}
+
+" Tags {{{
+set tags=tags;/,codex.tags;
+let g:tagbar_type_haskell = {
+    \ 'ctagsbin'  : 'hasktags',
+    \ 'ctagsargs' : '-x -c -o-',
+    \ 'kinds'     : [
+        \  'm:modules:0:1',
+        \  'd:data: 0:1',
+        \  'd_gadt: data gadt:0:1',
+        \  't:type names:0:1',
+        \  'nt:new types:0:1',
+        \  'c:classes:0:1',
+        \  'cons:constructors:1:1',
+        \  'c_gadt:constructor gadt:1:1',
+        \  'c_a:constructor accessors:1:1',
+        \  'ft:function types:1:1',
+        \  'fi:function implementations:0:1',
+        \  'o:others:0:1'
+    \ ],
+    \ 'sro'        : '.',
+    \ 'kind2scope' : {
+        \ 'm' : 'module',
+        \ 'c' : 'class',
+        \ 'd' : 'data',
+        \ 't' : 'type'
+    \ },
+    \ 'scope2kind' : {
+        \ 'module' : 'm',
+        \ 'class'  : 'c',
+        \ 'data'   : 'd',
+        \ 'type'   : 't'
+    \ }
+\ }
 
 " -------------------------------------------------------------------------- "
 "                            PLUGIN SETTINGS                                 "
@@ -433,13 +502,6 @@ nmap <leader>T :enew<cr>
 nmap <leader>bq :bp <BAR> bd #<CR>
 "}
 
-" JEDI VIM PLUGIN SETTINGS
-"{
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#completions_command = "<C-Space>"
-"}
-
 " CTRLP PLUGIN SETTINGS
 "{
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
@@ -465,7 +527,7 @@ endif
 
 " Ignore some folders and files for CtrlP indexing
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\.git$\|\.yardoc\|public$|log\|tmp$',
+  \ 'dir':  '\.git$\|\.yardoc\|public$|log\|tmp$|\.cabal-sandbox\',
   \ 'file': '\.so$\|\.dat$|\.DS_Store$'}
 
 " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
