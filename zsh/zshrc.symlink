@@ -8,11 +8,11 @@ export PROJECTS=~/Documents
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="geometry"
+ZSH_THEME="geometry/geometry"
 DEFAULT_USER="Yeshwanth"
 
 PROMPT_GEOMETRY_GIT_TIME=false
-GEOMETRY_COLOR_PROMPT=147
+GEOMETRY_COLOR_PROMPT="red"
 
 #Base16 Shell
 BASE16_SHELL="$PROJECTS/base16-shell/base16-paraiso.dark.sh"
@@ -121,6 +121,7 @@ alias zz='fasd_cd -d -i' # interactive directory jump
 
 # ALIASES
 ctags=/usr/local/bin/ctags
+alias vi="vim"
 
 # Show human friendly numbers and colors
 alias df='df -h'
@@ -140,5 +141,5 @@ alias poweroffvm='VBoxManage controlvm "Ubuntu16.04" poweroff'
 alias pausevm='VBoxManage controlvm "Ubuntu16.04" pause'
 alias resumevm='VBoxManage controlvm "Ubuntu16.04" resume'
 
-export NVM_DIR="/Users/yvenkatesh/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+#export NVM_DIR="/Users/yvenkatesh/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
